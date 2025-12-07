@@ -1,31 +1,22 @@
-#include <WiFi.h>          // Library WiFi khusus ESP32 (beda dengan ESP8266)
-#include <FirebaseESP32.h> // Library Firebase khusus ESP32
-
-// --- 1. KONFIGURASI WIFI ---
+#include <WiFi.h>          
+#include <FirebaseESP32.h> 
 #define WIFI_SSID "Stev"
 #define WIFI_PASSWORD "12341234"
 
-// --- 2. KONFIGURASI FIREBASE ---
-// Masukkan URL tanpa 'https://' dan tanpa '/' di akhir
+//KONFIGURASI FIREBASE
 #define FIREBASE_HOST "kendali-led-28d92-default-rtdb.asia-southeast1.firebasedatabase.app"
-// Kunci rahasia database (Settings -> Service Accounts -> Database Secrets)
-// Biarkan kosong ("") jika Rules database Anda di-set public (true)
 #define FIREBASE_AUTH "3iOUUPZrSOnYYNlzhjHeFwj6TvH64ayvpQr2CvuW"
 
-// --- 3. DEFINISI PIN LED (GPIO ESP32) ---
-// Gunakan angka GPIO langsung
 #define LED_MERAH 18
 #define LED_BIRU  19
 #define LED_KUNING 21
 
-// Objek Firebase
 FirebaseData firebaseData;
 FirebaseConfig config;
 FirebaseAuth auth;
 
-// Variabel untuk Blink (Kuning) - Multitasking
 unsigned long previousMillis = 0;
-const long interval = 500; // Kecepatan kedip (ms)
+const long interval = 500; 
 bool yellowState = false;
 
 String command = "";
@@ -33,17 +24,15 @@ String command = "";
 void setup() {
   Serial.begin(115200);
 
-  // Setup Pin Mode
   pinMode(LED_MERAH, OUTPUT);
   pinMode(LED_BIRU, OUTPUT);
   pinMode(LED_KUNING, OUTPUT);
   
-  // Matikan semua LED saat awal
   digitalWrite(LED_MERAH, LOW);
   digitalWrite(LED_BIRU, LOW);
   digitalWrite(LED_KUNING, LOW);
 
-  // Koneksi WiFi
+  //Koneksi
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   Serial.print("Menghubungkan ke WiFi");
   while (WiFi.status() != WL_CONNECTED) {
@@ -54,10 +43,9 @@ void setup() {
   Serial.print("Terhubung! IP: ");
   Serial.println(WiFi.localIP());
 
-  // Setup Firebase
+  //Setup Firebase
   config.database_url = FIREBASE_HOST;
-  config.signer.test_mode = true; // Mode test (bypass auth rumit)
-
+  config.signer.test_mode = true; 
   Firebase.begin(&config, &auth);
   Firebase.reconnectWiFi(true);
 }
